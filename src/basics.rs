@@ -3,7 +3,15 @@
     If n is less than 0, return -1
 **/
 pub fn gauss(n: i32) -> i32 {
-    unimplemented!()
+    let mut result = -1;
+    let mut index = 0;
+    if n > 0 {
+        loop{
+            result += index;
+            if index == n {break};
+        index+=1;
+        } result
+     } else {result}
 }
 
 /**
@@ -11,7 +19,11 @@ pub fn gauss(n: i32) -> i32 {
     are in the range [s,e]
 **/
 pub fn in_range(ls: &[i32], s: i32, e: i32) -> i32 {
-    unimplemented!()
+    let mut count = 0;
+    for i in ls.iter() {
+        if i >= &s && i <= &e {count+=1}
+    }
+    return count;
 }
 
 /**
@@ -28,7 +40,8 @@ pub fn subset<T: PartialEq>(set: &[T], target: &[T]) -> bool {
     It might be helpful to use the fold method of the Iterator trait
 **/
 pub fn mean(ls: &[f64]) -> Option<f64> {
-    unimplemented!()
+    let mean = ls.iter().fold(0.0,|acc, x| (acc + x)/2.0);
+    return Some(mean);
 }
 
 /**
@@ -37,7 +50,13 @@ pub fn mean(ls: &[f64]) -> Option<f64> {
     Ex: to_decimal of [1,0,1,0] returns 10
 **/
 pub fn to_decimal(ls: &[i32]) -> i32 {
-    unimplemented!()
+    let mut len = ls.len() - 1;
+    let mut num = 0;
+    for i  in ls.iter() {
+        num += i * 2_i32.pow(len as u32);
+        len -= 1;
+    }
+    return num;
 }
 
 /**
@@ -58,7 +77,13 @@ pub fn factorize(n: u32) -> Vec<u32> {
     EX: rotate [1,2,3,4] returns [2,3,4,1]
 **/
 pub fn rotate(lst: &[i32]) -> Vec<i32> {
-    unimplemented!()
+    let mut vect = lst.to_vec();
+    let f = vect.pop();
+    match f {
+    Some(f) => vect.push(f),
+    None => ()
+    }
+    return vect;
 }
 
 /**
@@ -80,5 +105,8 @@ pub fn substr(s: &String, target: &str) -> bool {
     EX: longest_sequence of "" is None
 **/
 pub fn longest_sequence(s: &str) -> Option<&str> {
-    unimplemented!()
+    let count = 0;
+    let start = 0;
+    let end = 0;
+    let slst = s.chars();
 }
