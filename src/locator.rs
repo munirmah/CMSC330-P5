@@ -15,8 +15,8 @@ struct Node<T> {
     data: T,
 }
 
-/** 
-    These traits are implemented for Nodes to make them comparable 
+/**
+    These traits are implemented for Nodes to make them comparable
 **/
 impl<T> PartialOrd for Node<T> {
     fn partial_cmp(&self, other: &Node<T>) -> Option<Ordering> {
@@ -30,9 +30,8 @@ impl<T> PartialEq for Node<T> {
     }
 }
 
-
-/** 
-    You must implement the above trait for the vector type 
+/**
+    You must implement the above trait for the vector type
 **/
 impl<T: PartialOrd> PriorityQueue<T> for Vec<T> {
     /**
@@ -42,7 +41,32 @@ impl<T: PartialOrd> PriorityQueue<T> for Vec<T> {
         works.
     **/
     fn enqueue(&mut self, ele: T) -> () {
-        unimplemented!()
+        let mut idx = self.len();
+        self.push(ele);
+        let mut curr;
+        let mut parent;
+
+        match self.get(idx) {
+            None => (),
+            Some(x) => curr = x,
+        }
+        match self.get((idx - 1) / 2) {
+            None => (),
+            Some(x) => parent = x,
+        }
+        while parent.partial_cmp(&curr) == Some(Ordering::Greater) {
+            self.insert((idx - 1) / 2, *curr);
+            self.insert(idx, parent);
+            idx = (idx - 1) / 2;
+            match self.get(idx) {
+                None => (),
+                Some(x) => curr = x,
+            }
+            match self.get((idx - 1) / 2) {
+                None => (),
+                Some(x) => parent = x,
+            }
+        }
     }
 
     /**
@@ -53,7 +77,54 @@ impl<T: PartialOrd> PriorityQueue<T> for Vec<T> {
         Return None if the queue was initially empty, Some(T) otherwise.
     **/
     fn dequeue(&mut self) -> Option<T> {
-        unimplemented!()
+        let tmp;
+        match self.pop() {
+            None => (),
+            Some(x) => tmp = x,
+        }
+        let res = Some(self.remove(0));
+        self.insert(0, tmp);
+
+        let mut idx = 0;
+        let mut curr;
+        let mut child1;
+        let mut child2;
+        match self.get(idx) {
+            None => (),
+            Some(x) => curr = x,
+        }
+        match self.get(2 * idx + 1) {
+            None => (),
+            Some(x) => child1 = x,
+        }
+        match self.get(2 * idx + 2) {
+            None => (),
+            Some(x) => child2 = x,
+        }
+        while curr.partial_cmp(child1) == Some(Ordering::Greater)
+            && curr.partial_cmp(child2) == Some(Ordering::Greater)
+        {
+            if curr.partial_cmp(child1) == Some(Ordering::Greater)
+                && curr.partial_cmp(child2) == Some(Ordering::Less)
+            {
+                /* swap curr and child1 */
+
+                self.insert(2 * idx + 1, *curr);
+                self.insert(idx, *child1);
+                idx = 2 * idx + 1;
+
+            } else if curr.partial_cmp(child1) == Some(Ordering::Less)
+                && curr.partial_cmp(child2) == Some(Ordering::Greater)
+            {
+                /* swap curr and child2 */
+                self.insert(2 * idx + 2, *curr);
+                self.insert(idx, *child2);
+                idx = 2 * idx + 2;
+            } else {
+                break; /* Not sure what to do here */
+            }
+        }
+        return res;
     }
 
     /**
@@ -64,10 +135,9 @@ impl<T: PartialOrd> PriorityQueue<T> for Vec<T> {
         otherwise.
     **/
     fn peek(&self) -> Option<&T> {
-        unimplemented!()
+        return self.get(0);
     }
 }
-
 
 /**
     You must implement this function that computes the orthogonal
@@ -75,8 +145,13 @@ impl<T: PartialOrd> PriorityQueue<T> for Vec<T> {
     is not like Euclidean distance.  See the specifications for more
     details.
 **/
-pub fn distance(p1: (i32,i32), p2: (i32,i32)) -> i32 {
-    unimplemented!()
+pub fn distance(p1: (i32, i32), p2: (i32, i32)) -> i32 {
+    let (p1n1,p1n2) = p1;
+    let (p2n1,p2n2) = p2;
+    
+    let x = p1n1 - p2n1;
+    let y = p1n2 - p2n2;
+    return x.abs() + y.abs()
 }
 
 /**
@@ -88,8 +163,9 @@ pub fn distance(p1: (i32,i32), p2: (i32,i32)) -> i32 {
     Stark will battle in the form of a 3-tuple.  See the specifications
     for more details on how to choose which enemy.
 **/
-pub fn target_locator<'a>(allies: &'a HashMap<&String, (i32,i32)>, enemies: &'a HashMap<&String, (i32,i32)>) -> (&'a str,i32,i32) {
+pub fn target_locator<'a>(
+    allies: &'a HashMap<&String, (i32, i32)>,
+    enemies: &'a HashMap<&String, (i32, i32)>,
+) -> (&'a str, i32, i32) {
     unimplemented!()
 }
-
-

@@ -148,7 +148,7 @@ pub fn longest_sequence(s: &str) -> Vec<char>{
     let mut i = 1;
     match s.chars().nth(0) {
         Some(x) => ret.push(x),
-        None => return None,
+        None => ()
     }
     while i <= s.len() {
         if s.chars().nth(i) == ret.pop() {
