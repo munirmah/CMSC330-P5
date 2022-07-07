@@ -41,21 +41,14 @@ impl<T: PartialOrd> PriorityQueue<T> for Vec<T> {
         works.
     **/
     fn enqueue(&mut self, ele: T) -> () {
-        let mut idx = self.len() as i32;
+        let mut idx = self.len();
         self.push(ele);
-        let mut curr;
-        let mut parent;
 
-        curr = self.get(idx as usize).unwrap();
-        parent = self.get(((idx - 1) / 2) as usize).unwrap();
-
-        while parent.partial_cmp(&curr) == Some(Ordering::Greater) {
-            self.swap(idx as usize, ((idx - 1) / 2) as usize);
-
-            idx = (idx - 1) / 2;
-
-            curr = self.get(idx as usize).unwrap();
-            parent = self.get(((idx - 1) / 2) as usize).unwrap();
+        while idx > 0 && self[idx] < self[(idx - 1) / 2] {
+            if self[idx] < self[(idx - 1) / 2] {
+                self.swap(idx, (idx - 1) / 2);
+                idx = (idx - 1) / 2;
+            }
         }
     }
 
@@ -67,147 +60,26 @@ impl<T: PartialOrd> PriorityQueue<T> for Vec<T> {
         Return None if the queue was initially empty, Some(T) otherwise.
     **/
     fn dequeue(&mut self) -> Option<T> {
-        /*         if self.len() == 0 {
-            return None;
-        } else {
-            let result = self.swap_remove(0);
-
-            let mut idx = 0;
-            let mut curr;
-            let mut child1;
-            let mut child2;
-
-            curr = self.get(idx).unwrap();
-            child1 = self.get(2 * idx + 1).unwrap();
-            child2 = self.get(2 * idx + 2).unwrap();
-
-            while curr > child1 || curr > child2 {
-                if curr > child1 && curr < child2 {
-                    /* swap curr and child1 */
-                    self.swap(2 * idx + 1, idx);
-                    idx = 2 * idx + 1;
-
-                    curr = self.get(idx).unwrap();
-                    child1 = self.get(2 * idx + 1).unwrap();
-                    child2 = self.get(2 * idx + 2).unwrap();
-                } else if curr < child1 && curr > child2 {
-                    /* swap curr and child2 */
-                    self.swap(2 * idx + 2, idx);
-                    idx = 2 * idx + 2;
-
-                    curr = self.get(idx).unwrap();
-                    child1 = self.get(2 * idx + 1).unwrap();
-                    child2 = self.get(2 * idx + 2).unwrap();
-                } else {
-                    if curr < child1 && curr < child2 {
-                        if child1 < child2 {
-                            /* Swap curr with child1 */
-                            self.swap(2 * idx + 1, idx);
-                            idx = 2 * idx + 1;
-
-                            curr = self.get(idx).unwrap();
-                            child1 = self.get(2 * idx + 1).unwrap();
-                            child2 = self.get(2 * idx + 2).unwrap();
-                        } else {
-                            /* Swap curr with child2 */
-                            self.swap(2 * idx + 2, idx);
-                            idx = 2 * idx + 2;
-
-                            curr = self.get(idx).unwrap();
-                            child1 = self.get(2 * idx + 1).unwrap();
-                            child2 = self.get(2 * idx + 2).unwrap();
-                        }
-                    } else {
-                        break;
-                    }
-                }
-            }
-            return Some(result);
-        } */
+        let mut result = None;
         if self.len() == 0 {
-            return None;
+            return result;
         } else {
-            let result = self.swap_remove(0);
-
+            result = Some(self.swap_remove(0));
             let mut idx = 0;
-            let mut curr;
-            let mut child1;
-            let mut child2;
+            let mut sidx;
 
-            curr = self.get(idx).unwrap();
-            child1 = self.get(2 * idx + 1).unwrap();
-            child2 = self.get(2 * idx + 2).unwrap();
-            if self.len() == 2 {
-                if self[0] > self[1] {
-                    self.swap(idx, idx + 1);
+            while self.get(2 * idx + 1) != None {
+                sidx = 2 * idx + 1;
+                if self.get(2 * idx + 2) != None && (self[2 * idx + 2] < self[2 * idx + 1]) {
+                    sidx = 2 * idx + 2;
                 }
-            }
-            while self.get(2 * idx + 1) != None
-                && self.get(2 * idx + 2) != None
-                && (curr > self.get(2 * idx + 1).unwrap() || curr > self.get(2 * idx + 2).unwrap())
-            {
-                if curr > self.get(2 * idx + 1).unwrap() && curr < self.get(2 * idx + 2).unwrap() {
-                    /* swap curr and child1 */
-                    self.swap(2 * idx + 1, idx);
-                    idx = 2 * idx + 1;
-                    if idx > self.len() {
-                        break;
-                    };
-                    curr = self.get(idx).unwrap();
-                //                   child1 = self.get(2 * idx + 1).unwrap();
-                //                  child2 = self.get(2 * idx + 2).unwrap();
-                } else if curr < self.get(2 * idx + 1).unwrap()
-                    && curr > self.get(2 * idx + 2).unwrap()
-                {
-                    /* swap curr and child2 */
-                    self.swap(2 * idx + 2, idx);
-                    idx = 2 * idx + 2;
-                    if idx > self.len() {
-                        break;
-                    };
-
-                    curr = self.get(idx).unwrap();
-                //                  child1 = self.get(2 * idx + 1).unwrap();
-                //                    child2 = self.get(2 * idx + 2).unwrap();
-                } else {
-                    println!("Hello");
-                    if curr > self.get(2 * idx + 1).unwrap()
-                        && curr > self.get(2 * idx + 2).unwrap()
-                    {
-                        if self.get(2 * idx + 1).unwrap() < self.get(2 * idx + 2).unwrap() {
-                            /* Swap curr with child1 */
-                            self.swap(2 * idx + 1, idx);
-                            idx = 2 * idx + 1;
-                            if idx > self.len() {
-                                break;
-                            };
-
-                            curr = self.get(idx).unwrap();
-                        //                   child1 = self.get(2 * idx + 1).unwrap();
-                        //                  child2 = self.get(2 * idx + 2).unwrap();
-                        } else {
-                            /* Swap curr with child2 */
-                            self.swap(2 * idx + 2, idx);
-                            idx = 2 * idx + 2;
-                            if idx > self.len() {
-                                break;
-                            };
-
-                            curr = self.get(idx).unwrap();
-                            //                  if self.get(2 * idx + 1) != None{
-                            //                    child1 = self.get(2 * idx + 1).unwrap();
-                            //                      }
-                            //                        if self.get(2* idx + 2) != None{
-                            //                          child2 = self.get(2 * idx + 2).unwrap();
-                            //                  }
-                        }
-                    } else {
-                        break;
-                    }
+                if self[idx] > self[sidx] {
+                    self.swap(idx, sidx);
                 }
+                idx = sidx;
             }
-            return Some(result);
         }
+        return result;
     }
 
     /**
