@@ -62,12 +62,14 @@ pub fn to_command(s: &str) -> Command {
         "power" => match st.next().unwrap() {
             "inc" => Command::Power(true, st.next().unwrap().parse::<i32>().unwrap()),
             "dec" => Command::Power(false, st.next().unwrap().parse::<i32>().unwrap()),
+            _ => panic!("Error in match"),
         },
         "add" => Command::Missiles(true, st.next().unwrap().parse::<i32>().unwrap()),
         "fire" => Command::Missiles(false, st.next().unwrap().parse::<i32>().unwrap()),
-        "Shield" => match st.next().unwrap() {
+        "shield" => match st.next().unwrap() {
             "on" => Command::Shield(true),
             "off" => Command::Shield(false),
+            _ => panic!("Error in match"),
         },
         "try" => Command::Try,
         _ => Command::Invalid,

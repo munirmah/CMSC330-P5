@@ -6,6 +6,7 @@ pub fn gauss(n: i32) -> i32 {
     let mut result = -1;
     let mut index = 0;
     if n > 0 {
+        result += 1;
         loop {
             result += index;
             if index == n {
@@ -39,16 +40,20 @@ pub fn in_range(ls: &[i32], s: i32, e: i32) -> i32 {
     Ex: [1,3,2] is a subset of [1,2,3,4,5]
 **/
 pub fn subset<T: PartialEq>(set: &[T], target: &[T]) -> bool {
-    let mut result = true;
-    for i in set.iter() {
-        for j in target.iter() {
-            if i != j {
-                result = false;
-                break;
+    let mut flag = false;
+    for i in target.iter() {
+        flag = false;
+        for j in set.iter() {
+            if i == j {
+                flag = true;
             }
+            // if flag = false then return false
+        }
+        if flag == false {
+            return false;
         }
     }
-    return result;
+    return flag;
 }
 
 /**
@@ -59,8 +64,8 @@ pub fn mean(ls: &[f64]) -> Option<f64> {
     if ls.len() == 0 {
         return None;
     } else {
-        let mean = ls.iter().fold(0.0, |acc, x| (acc + x) / 2.0);
-        return Some(mean);
+        let mean = ls.iter().fold(0.0, |acc, x| (acc + x));
+        return Some(mean / (ls.len() as f64));
     }
 }
 
@@ -70,10 +75,11 @@ pub fn mean(ls: &[f64]) -> Option<f64> {
     Ex: to_decimal of [1,0,1,0] returns 10
 **/
 pub fn to_decimal(ls: &[i32]) -> i32 {
-    let mut len = ls.len() - 1;
+    let mut len = (ls.len() - 1) as i32;
     let mut num = 0;
+    let base: i32 = 2;
     for i in ls.iter() {
-        num += i * 2_i32.pow(len as u32);
+        num += i * base.pow(len as u32);
         len -= 1;
     }
     return num;
@@ -88,12 +94,15 @@ pub fn to_decimal(ls: &[i32]) -> i32 {
 pub fn factorize(n: u32) -> Vec<u32> {
     let mut result = Vec::new();
     let mut x = n;
-    for i in 2..=((n as f32).sqrt() as u32) {
+    for i in 2..=(n / 2) {
         while x % i == 0 {
             result.push(i);
             x /= i;
         }
     }
+    if result.is_empty() {
+        result.push(n)
+    };
     return result;
 }
 
@@ -106,11 +115,8 @@ pub fn factorize(n: u32) -> Vec<u32> {
 **/
 pub fn rotate(lst: &[i32]) -> Vec<i32> {
     let mut vect = lst.to_vec();
-    let f = vect.pop();
-    match f {
-        Some(f) => vect.push(f),
-        None => (),
-    }
+    let first = vect.remove(0);
+    vect.push(first);
     return vect;
 }
 
@@ -143,21 +149,20 @@ pub fn substr(s: &String, target: &str) -> bool {
     EX: longest_sequence of "xyz" is Some("x")
     EX: longest_sequence of "" is None
 **/
-pub fn longest_sequence(s: &str) -> Vec<char>{
-    let mut ret = Vec::new();
-    let mut i = 1;
-    match s.chars().nth(0) {
-        Some(x) => ret.push(x),
-        None => ()
-    }
-    while i <= s.len() {
-        if s.chars().nth(i) == ret.pop() {
-            match s.chars().nth(i) {
-                Some(x) => ret.push(x),
-                None => (),
+pub fn longest_sequence(s: &str) -> Option<&str> {
+    let mut result = "";
+    let mut length = 0;
+    for i in 0..s.len() {
+        for j in i..s.len() {
+            if s[i..i + 1] == s[j..j + 1] {
+                if j - i + 1 > length {
+                    length = j - i + 1;
+                    result = &s[i..(j + 1)];
+                }
+            } else {
+                break;
             }
         }
-        i += 1;
     }
-    return ret;
+    return Some(result);
 }
