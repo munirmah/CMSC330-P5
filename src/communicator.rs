@@ -62,16 +62,26 @@ pub fn to_command(s: &str) -> Command {
         "power" => match st.next().unwrap() {
             "inc" => Command::Power(true, st.next().unwrap().parse::<i32>().unwrap()),
             "dec" => Command::Power(false, st.next().unwrap().parse::<i32>().unwrap()),
-            _ => panic!("Error in match"),
+            _ => Command::Invalid,
         },
-        "add" => Command::Missiles(true, st.next().unwrap().parse::<i32>().unwrap()),
-        "fire" => Command::Missiles(false, st.next().unwrap().parse::<i32>().unwrap()),
+        "add" => Command::Missiles(true, st.next().unwrap().parse::<i32>().unwrap()), /* Error could be here */
+        "fire" => Command::Missiles(false, st.next().unwrap().parse::<i32>().unwrap()), /* Error could be here */
         "shield" => match st.next().unwrap() {
             "on" => Command::Shield(true),
             "off" => Command::Shield(false),
-            _ => panic!("Error in match"),
+            _ => Command::Invalid,
         },
-        "try" => Command::Try,
+        "try" => match st.next().unwrap() {
+            "calling" => match st.next().unwrap() {
+                "Miss" => match st.next().unwrap() {
+                    "Potts" => Command::Try,
+                    _ => Command::Invalid,
+                },
+                _ => Command::Invalid,
+            },
+            _ => Command::Invalid,
+        },
+
         _ => Command::Invalid,
     }
 }

@@ -122,5 +122,18 @@ pub fn target_locator<'a>(
     allies: &'a HashMap<&String, (i32, i32)>,
     enemies: &'a HashMap<&String, (i32, i32)>,
 ) -> (&'a str, i32, i32) {
-    unimplemented!()
+    let mut alst = Vec::new();
+
+    for ally in allies.iter() {
+        let (aName, apos) = ally;
+        for enemy in enemies.iter() {
+            let (eName, epos) = enemy;
+            let targ = Node {
+                priority: distance(*apos, *epos),
+                data: eName,
+            };
+            alst.enqueue(targ);
+        }
+    }
+    return ("1", 1, 1);
 }

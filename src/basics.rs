@@ -41,16 +41,19 @@ pub fn in_range(ls: &[i32], s: i32, e: i32) -> i32 {
 **/
 pub fn subset<T: PartialEq>(set: &[T], target: &[T]) -> bool {
     let mut flag = false;
-    for i in target.iter() {
-        flag = false;
-        for j in set.iter() {
-            if i == j {
-                flag = true;
+    if target.len() == 0 {
+        flag = true;
+    } else {
+        for i in target.iter() {
+            flag = false;
+            for j in set.iter() {
+                if i == j {
+                    flag = true;
+                }
             }
-            // if flag = false then return false
-        }
-        if flag == false {
-            return false;
+            if flag == false {
+                return false;
+            }
         }
     }
     return flag;
@@ -75,14 +78,18 @@ pub fn mean(ls: &[f64]) -> Option<f64> {
     Ex: to_decimal of [1,0,1,0] returns 10
 **/
 pub fn to_decimal(ls: &[i32]) -> i32 {
-    let mut len = (ls.len() - 1) as i32;
-    let mut num = 0;
-    let base: i32 = 2;
-    for i in ls.iter() {
-        num += i * base.pow(len as u32);
-        len -= 1;
+    if ls.len() > 0 {
+        let mut len = (ls.len() - 1) as i32;
+        let mut num = 0;
+        let base: i32 = 2;
+        for i in ls.iter() {
+            num += i * base.pow(len as u32);
+            len -= 1;
+        }
+        return num;
+    } else {
+        return 0;
     }
-    return num;
 }
 
 /**
@@ -115,8 +122,11 @@ pub fn factorize(n: u32) -> Vec<u32> {
 **/
 pub fn rotate(lst: &[i32]) -> Vec<i32> {
     let mut vect = lst.to_vec();
-    let first = vect.remove(0);
-    vect.push(first);
+
+    if lst.len() > 0 {
+        let first = vect.remove(0);
+        vect.push(first);
+    }
     return vect;
 }
 
@@ -150,19 +160,23 @@ pub fn substr(s: &String, target: &str) -> bool {
     EX: longest_sequence of "" is None
 **/
 pub fn longest_sequence(s: &str) -> Option<&str> {
-    let mut result = "";
-    let mut length = 0;
-    for i in 0..s.len() {
-        for j in i..s.len() {
-            if s[i..i + 1] == s[j..j + 1] {
-                if j - i + 1 > length {
-                    length = j - i + 1;
-                    result = &s[i..(j + 1)];
+    if s.len() == 0 {
+        return None;
+    } else {
+        let mut result = "";
+        let mut length = 0;
+        for i in 0..s.len() {
+            for j in i..s.len() {
+                if s[i..i + 1] == s[j..j + 1] {
+                    if j - i + 1 > length {
+                        length = j - i + 1;
+                        result = &s[i..(j + 1)];
+                    }
+                } else {
+                    break;
                 }
-            } else {
-                break;
             }
         }
+        return Some(result);
     }
-    return Some(result);
 }
