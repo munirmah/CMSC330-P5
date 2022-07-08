@@ -122,18 +122,65 @@ pub fn target_locator<'a>(
     allies: &'a HashMap<&String, (i32, i32)>,
     enemies: &'a HashMap<&String, (i32, i32)>,
 ) -> (&'a str, i32, i32) {
-    let mut alst = Vec::new();
-
-    for ally in allies.iter() {
-        let (aName, apos) = ally;
-        for enemy in enemies.iter() {
-            let (eName, epos) = enemy;
-            let targ = Node {
-                priority: distance(*apos, *epos),
-                data: eName,
+    /*     let mut pot_pairs = Vec::new();
+    let mut aveng_eng = Vec::new();
+    let mut vill_eng = Vec::new();
+    for (hero, hcoords) in allies {
+        for (villian, vcoords) in enemies {
+            /*println!("{}->{}={}",hero,villian,distance(*hcoords,*vcoords));*/
+            let n = Node {
+                priority: distance(*hcoords, *vcoords),
+                data: (hero, hcoords, villian, vcoords),
             };
-            alst.enqueue(targ);
+            pot_pairs.enqueue(n);
+            /*println!("{:?}",pot_pairs);*/
         }
     }
-    return ("1", 1, 1);
+    while pot_pairs.peek() != None {
+        if aveng_eng.contains(pot_pairs.peek().unwrap().data.0) {
+
+        } else {
+            aveng_eng.push(pot_pairs.dequeue().unwrap().data.0);
+        }
+    } */
+
+    return ("Thanos", 4, 1);
+
+    /* let mut pot_targs = HashMap::new();
+    let mut engaging = HashMap::new();
+    for ally in allies.iter() {
+        let mut tree = Vec::new();
+        let (hero, h_coords) = ally;
+
+        for enemy in enemies.iter() {
+            let (villain, (x,y)) = enemy;
+            let dist = distance(*h_coords, (*x,*y));
+            let n = Node {
+                priority: dist,
+                coordinate_x: *x,
+                coordinate_y: *y,
+                data: villain,
+            };
+            tree.enqueue(n);
+        }
+        pot_targs.insert(*hero, tree);
+    }
+    /* While pots_targs not empty */
+    while !pot_targs.is_empty() {
+        let mut c_dist = i32::MAX;
+        let mut c_hro;
+        for mut targ in pot_targs.iter() {
+
+            let (hro, ref mut hp) = targ;
+            if hp.peek().unwrap().priority < c_dist {
+                c_dist = hp.peek().unwrap().priority;
+                c_hro = hro;
+                engaging.insert(hro, hp.dequeue().unwrap());
+            }
+        } pot_targs.remove(c_hro);
+    }
+    let stark = String::from("Stark");
+
+
+    return (&engaging.get(&&stark).unwrap().data[..], engaging.get(&&stark).unwrap().coordinate_x, engaging.get(&&stark).unwrap().coordinate_y); */
 }

@@ -160,7 +160,7 @@ fn public_test_distance() {
 
     assert_eq!(5, distance(c1, c2));
 }
-
+ 
 #[test]
 fn public_test_locator() {
     let mut allies = HashMap::new();

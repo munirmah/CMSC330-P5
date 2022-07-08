@@ -25,17 +25,17 @@ impl Command {
             Self::Power(true, n) => format!(
                 "{}{}{}",
                 String::from("Power increased by "),
-                n,
+                *n,
                 String::from("%")
             ),
             Self::Power(false, n) => format!(
                 "{}{}{}",
                 String::from("Power decreased by "),
-                n,
+                *n,
                 String::from("%")
             ),
-            Self::Missiles(true, n) => format!("{}{}", String::from("Missiles increased by "), n),
-            Self::Missiles(false, n) => format!("{}{}", String::from("Missiles decreased by "), n),
+            Self::Missiles(true, n) => format!("{}{}", String::from("Missiles increased by "), *n),
+            Self::Missiles(false, n) => format!("{}{}", String::from("Missiles decreased by "), *n),
             Self::Shield(true) => String::from("Shield turned on"),
             Self::Shield(false) => String::from("Shield turned off"),
             Self::Try => String::from("Call attempt failed"),
@@ -60,28 +60,80 @@ pub fn to_command(s: &str) -> Command {
     let mut st = s.split_whitespace();
     match st.next().unwrap() {
         "power" => match st.next().unwrap() {
-            "inc" => Command::Power(true, st.next().unwrap().parse::<i32>().unwrap()),
-            "dec" => Command::Power(false, st.next().unwrap().parse::<i32>().unwrap()),
-            _ => Command::Invalid,
-        },
-        "add" => Command::Missiles(true, st.next().unwrap().parse::<i32>().unwrap()), /* Error could be here */
-        "fire" => Command::Missiles(false, st.next().unwrap().parse::<i32>().unwrap()), /* Error could be here */
-        "shield" => match st.next().unwrap() {
-            "on" => Command::Shield(true),
-            "off" => Command::Shield(false),
-            _ => Command::Invalid,
-        },
-        "try" => match st.next().unwrap() {
-            "calling" => match st.next().unwrap() {
-                "Miss" => match st.next().unwrap() {
-                    "Potts" => Command::Try,
+            "inc" => match st.next() {
+                Some(s) => match s.parse::<i32>() {
+                    Ok(n) => match st.next() {
+                        _s => match st.next() {
+                            None => Command::Power(true, n),
+                            _ => Command::Invalid,
+                        },
+                    },
+                    _ => Command::Invalid,
+                },
+                _ => Command::Invalid,
+            },
+            "dec" => match st.next() {
+                Some(s) => match s.parse::<i32>() {
+                    Ok(n) => match st.next() {
+                        _s => match st.next() {
+                            None => Command::Power(false, n),
+                            _ => Command::Invalid,
+                        },
+                    },
                     _ => Command::Invalid,
                 },
                 _ => Command::Invalid,
             },
             _ => Command::Invalid,
         },
-
+        "add" => match st.next() {
+            Some(s) => match s.parse::<i32>() {
+                Ok(n) => match st.next() {
+                    _s => match st.next() {
+                        None => Command::Missiles(true, n),
+                        _ => Command::Invalid,
+                    },
+                },
+                _ => Command::Invalid,
+            },
+            _ => Command::Invalid,
+        },
+        "fire" => match st.next() {
+            Some(s) => match s.parse::<i32>() {
+                Ok(n) => match st.next() {
+                    _s => match st.next() {
+                        None => Command::Missiles(false, n),
+                        _ => Command::Invalid,
+                    },
+                },
+                _ => Command::Invalid,
+            },
+            None => Command::Invalid,
+        },
+        "shield" => match st.next().unwrap() {
+            "on" => match st.next() {
+                None => Command::Shield(true),
+                _ => Command::Invalid,
+            },
+            "off" => match st.next() {
+                None => Command::Shield(false),
+                _ => Command::Invalid,
+            },
+            _ => Command::Invalid,
+        },
+        "try" => match st.next().unwrap() {
+            "calling" => match st.next().unwrap() {
+                "Miss" => match st.next().unwrap() {
+                    "Potts" => match st.next() {
+                        None => Command::Try,
+                        _ => Command::Invalid,
+                    },
+                    _ => Command::Invalid,
+                },
+                _ => Command::Invalid,
+            },
+            _ => Command::Invalid,
+        },
         _ => Command::Invalid,
     }
 }
